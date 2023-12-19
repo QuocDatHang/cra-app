@@ -1,38 +1,43 @@
 import logo from './logo.svg';
 import './App.css';
+import Card from './components/Card/Card';
 
-const profile = {
-  name: 'Ronaldo',
-  age: 38,
-  gender: 'Female',
-  email: 'cr7@gmail.com',
-  avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Cristiano_Ronaldo%2C_2010.jpg/170px-Cristiano_Ronaldo%2C_2010.jpg",
-  mobile: '0944111222'
-}
+const profiles = [
+  {
+    name: 'Ronaldo',
+    age: 38,
+    gender: 'Female',
+    email: 'cr7@gmail.com',
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Cristiano_Ronaldo%2C_2010.jpg/170px-Cristiano_Ronaldo%2C_2010.jpg",
+    mobile: '0944111222'
+  },
+  {
+    name: 'Messi',
+    age: 35,
+    gender: 'Male',
+    email: 'm10@gmail.com',
+    avatar: "https://images2.thanhnien.vn/528068263637045248/2023/10/30/messi-1-16986835956171266032258.jpeg",
+    mobile: '01233321231'
+  },
+  {
+    name: 'Kaka',
+    age: 44,
+    gender: 'Male',
+    email: 'kk@gmail.com',
+    avatar: "https://baothainguyen.vn/file/oldimage/baothainguyen/UserFiles/images/news/5.5.2008_4h20_Kaka%205-5-08.jpg",
+    mobile: '12222233333'
+  }
+]
 
 function App() {
   return (
     <div className="container text-black bg-success vh-100">
       <h2>Hello world!</h2>
-      <div className="card mb-3" style={{ maxWidth: '540px' }}>
-        <div className="row g-0">
-          <div className="col-md-4">
-            <img src={profile.avatar} className="img-fluid rounded-start" alt="..." />
-          </div>
-          <div className="col-md-8">
-            <div className="card-body">
-              <h5 className="card-title">{profile.name}</h5>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item">Age: <span className='fw-bolder'>{profile.age}</span></li>
-                <li className="list-group-item">Gender: <span className='fw-bolder'>{profile.gender}</span></li>
-                <li className="list-group-item">Email: <span className='fw-bolder'>{profile.email}</span></li>
-                <li className="list-group-item">Mobile: <span className='fw-bolder'>{profile.mobile}</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {
+        profiles.map(profile => (
+          <Card item={profile}/>
+        ))
+      }
     </div>
   );
 }
