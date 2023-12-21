@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
 export default function ToDoApp() {
-  // const [task, setTask] = useState({});
+  const [task, setTask] = useState({
+    id: 0,
+    taskName: '',
+    type: 'Important'
+  });
+  const [isEdit, setIsEdit] = useState(false)
 
   const [taskList, setTaskList] = useState([]);
 
@@ -15,13 +20,9 @@ export default function ToDoApp() {
     setTaskList([...result])
   }
 
-  const handleAddTask = (a) => {
-    a.preventDefault();
+  const handleAddTask = (evt) => {
+    evt.preventDefault();
     const addTask = async () => {
-      let taskName = document.getElementById('taskName').value;
-      let typeElement = document.getElementById('type');
-      let type = typeElement.options[typeElement.selectedIndex].text;
-      let task = { taskName, type }
       const response = await fetch('https://65829b9202f747c83679b1ac.mockapi.io/todoapp', {
         method: 'POST',
         headers: {
@@ -31,6 +32,7 @@ export default function ToDoApp() {
       });
       if (response.ok) {
         alert('Add successful!')
+        setTask({ taskName: '', type: 'Important' })
       }
       else {
         alert('Add fail!')
@@ -40,7 +42,72 @@ export default function ToDoApp() {
     addTask();
   }
 
-  
+  const handleInput = (e) => {
+    if (e.target.name === 'taskName') {
+      setTask({ ...task, taskName: e.target.value })
+    }
+    if (e.target.name === 'type') {
+      setTask({ ...task, type: e.target.value })
+    }
+  }
+
+  const handleEdit = (id) => {
+    setIsEdit(true);
+    getTaskById(id).then((data) => {
+      setTask(data);
+    })
+  }
+
+  const confirmEdit = () => {
+    fetch(`https://65829b9202f747c83679b1ac.mockapi.io/todoapp/${task.id}`, {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task)
+    })
+      .then(res => {
+        if (res.ok) {
+          alert('Edit successful')
+          setIsEdit(false);
+          setTask({ taskName: '', type: 'Important' })
+
+          fetchData();
+        }
+        else {
+          alert('Edit fail!')
+        }
+      })
+  }
+
+  const getTaskById = async (id) => {
+    const res = await fetch(`https://65829b9202f747c83679b1ac.mockapi.io/todoapp/${id}`)
+    const task = await res.json();
+    return task;
+  }
+
+  const handleDelete = (id) => {
+    const confirm = window.confirm('Are you sure?')
+    if (confirm) {
+      fetch(`https://65829b9202f747c83679b1ac.mockapi.io/todoapp/${id}`, {
+        method: 'DELETE'
+      })
+        .then((res) => {
+          if (res.ok) {
+            alert('Delete successful!')
+            fetchData();
+          }
+          else {
+            alert('Delete fail!')
+          }
+        })
+    }
+  }
+
+  const handleCancel = () => {
+    setIsEdit(false);
+    setTask({ taskName: '', type: 'Important' })
+  }
 
   return (
     <>
@@ -48,13 +115,17 @@ export default function ToDoApp() {
         <form>
           <h3>To Do App</h3>
           <label>Task Name</label>
-          <input type='text' id='taskName' className='form-control' />
+          <input type='text' name='taskName' value={task.taskName} className='form-control' onChange={handleInput} />
           <label>Type</label>
-          <select className='form-select' id='type'>
+          <select className='form-select' value={task.type} name='type' onChange={handleInput}>
             <option>Important</option>
             <option>Normal</option>
           </select>
-          <button className='btn btn-warning mt-3' onClick={handleAddTask}>Add</button>
+          {isEdit ? (<>
+            <button type='button' className='btn btn-primary mt-3 me-2' onClick={confirmEdit}>Edit</button>
+            <button type='button' className='btn btn-secondary mt-3' onClick={handleCancel}>Cancel</button>
+          </>)
+            : (<button className='btn btn-warning mt-3' onClick={handleAddTask}>Add</button>)}
         </form>
         <table className='table bg-info mt-3'>
           <thead>
@@ -73,8 +144,8 @@ export default function ToDoApp() {
                   <td>{task.taskName}</td>
                   <td>{task.type}</td>
                   <td>
-                    <button className='btn bg-primary me-2'>Edit</button>
-                    <button className='btn bg-danger'>Delete</button>
+                    <button className='btn bg-primary me-2' onClick={() => handleEdit(task.id)}>Edit</button>
+                    <button className='btn bg-danger' onClick={() => handleDelete(task.id)}>Delete</button>
                   </td>
                 </tr>
               ))
