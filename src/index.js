@@ -5,10 +5,12 @@ import App from './App';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import ToDoApp from './components/ToDoApp/ToDoApp';
 import CreateUser from './components/CreateUser/CreateUser';
+import { BrowserRouter } from 'react-router-dom';
+import Router from './components/Router/Router';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <>
-    <CreateUser />
-  </>
+  <React.StrictMode>
+      <CreateUser />
+  </React.StrictMode>
 );
