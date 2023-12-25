@@ -26,13 +26,6 @@ export default function UserManagement() {
     const handleEdit = (id) => {
         setUserId(id)
         setIsEdit(true)
-        // fetch(`https://65829b9202f747c83679b1ac.mockapi.io/users/${id}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         "Content-type": "application/json"
-        //     },
-
-        // })
     }
 
     const handleDelete = (id) => {
@@ -79,8 +72,8 @@ export default function UserManagement() {
 
                     <div className="my-2">
                         <label>Gender:</label>
-                        <select defaultValue='Male' className="form-control">
-                            <option value="">Please choose</option>
+                        <select defaultValue='All' className="form-control">
+                            <option value="All">All</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
@@ -118,9 +111,13 @@ export default function UserManagement() {
 
                 <section className="col-8">
                     <input className="form-control w-50 mb-5" type="search" placeholder="Search" aria-label="Search" />
-                    <button to='/createUser' className="btn btn-primary mb-2" onClick={() => setAddUser(true)}>Add User</button>
+                    <button to='/createUser' className="btn btn-primary mb-2" onClick={() => {
+                        setAddUser(true)
+                        setIsEdit(false)
+                    }
+                    }>Add User</button>
                     {
-                        addUser ? (<AddUser setUsers={setUsers} setLoading={setLoading} userId={userId} 
+                        addUser ? (<AddUser users={users} setUsers={setUsers} setLoading={setLoading} userId={userId} 
                             setUserId={setUserId} isEdit={isEdit} setIsEdit={setIsEdit} setAddUser={setAddUser}/>) : ''
                     }
                     {
