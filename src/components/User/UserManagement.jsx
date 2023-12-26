@@ -124,7 +124,7 @@ export default function UserManagement() {
                             setUserId={setUserId} isEdit={isEdit} setIsEdit={setIsEdit} setAddUser={setAddUser}/>) : ''
                     }
                     {
-                        loading ? (<p>Loading...</p>) :
+                        loading ? (Swal.showLoading()) :
                             (
                                 <table className="table">
                                     <thead>
