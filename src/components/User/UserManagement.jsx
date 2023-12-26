@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AddUser from "./AddUser";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function UserManagement() {
     const [users, setUsers] = useState([])
@@ -14,18 +14,19 @@ export default function UserManagement() {
 
     useEffect(() => {
         setLoading(true);
-        fetch('https://65829b9202f747c83679b1ac.mockapi.io/users')
-            .then((res) => res.json())
-            .then((result) => {
-                setUsers(result);
-                setLoading(false);
-            })
+        const fetchAllUsers = async () => {
+            const res = await axios.get('https://65829b9202f747c83679b1ac.mockapi.io/users');
+            setUsers(res.data);
+            setLoading(false);
+        }
+        fetchAllUsers();
     }, [isDeleted])
 
 
     const handleEdit = (id) => {
         setUserId(id)
         setIsEdit(true)
+        setAddUser(true)
     }
 
     const handleDelete = (id) => {
@@ -37,30 +38,27 @@ export default function UserManagement() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                fetch(`https://65829b9202f747c83679b1ac.mockapi.io/users/${id}`, {
-                    method: 'DELETE'
-                }).then((res) => {
-                    if (res.ok) {
-                        setIsDeleted(res.json())
-                        Swal.fire({
-                            title: "Deleted!",
-                            text: "User has been deleted.",
-                            icon: "success"
-                        });
-                    }
-                    else {
-                        Swal.fire({
-                            title: "Fail!",
-                            text: "Delete error!",
-                            icon: "error"
-                        });
-                    }
+                const res = await axios.delete(`https://65829b9202f747c83679b1ac.mockapi.io/users/${id}`);
+                console.log(res);
+                if (res.statusText == 'OK') {
+                    setIsDeleted(res.data)
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "User has been deleted.",
+                        icon: "success"
+                    });
                 }
-                )
+                else {
+                    Swal.fire({
+                        title: "Fail!",
+                        text: "Delete error!",
+                        icon: "error"
+                    });
+                }
             }
-        });
+        })
     }
 
     return (
@@ -72,7 +70,7 @@ export default function UserManagement() {
 
                     <div className="my-2">
                         <label>Gender:</label>
-                        <select defaultValue='All' className="form-control">
+                        <select defaultValue='All' className="form-control" readOnly>
                             <option value="All">All</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -82,7 +80,7 @@ export default function UserManagement() {
                     <div id="sortAge">
                         <label>Age:</label>
                         <div className="form-check">
-                            <input className="form-check-input" type="radio" name="sortAge" defaultChecked />
+                            <input className="form-check-input" type="radio" name="sortAge" defaultChecked readOnly/>
                             <label className="form-check-label">
                                 10-30
                             </label>
@@ -111,17 +109,20 @@ export default function UserManagement() {
 
                 <section className="col-8">
                     <input className="form-control w-50 mb-5" type="search" placeholder="Search" aria-label="Search" />
-                    <button to='/createUser' className="btn btn-primary mb-2" onClick={() => {
+                    <button className="btn btn-primary mb-2" onClick={() => {
+                        setUserId()
                         setAddUser(true)
                         setIsEdit(false)
                     }
                     }>Add User</button>
                     {
-                        addUser ? (<AddUser users={users} setUsers={setUsers} setLoading={setLoading} userId={userId} 
-                            setUserId={setUserId} isEdit={isEdit} setIsEdit={setIsEdit} setAddUser={setAddUser}/>) : ''
+                        addUser ? (<AddUser users={users} setUsers={setUsers} setLoading={setLoading} userId={userId}
+                            setUserId={setUserId} isEdit={isEdit} setIsEdit={setIsEdit} setAddUser={setAddUser} />) : ''
                     }
                     {
-                        loading ? (Swal.showLoading()) :
+                        loading ? (<div class="text-center">
+                            <div class="spinner-border text-warning" />
+                        </div>) :
                             (
                                 <table className="table">
                                     <thead>

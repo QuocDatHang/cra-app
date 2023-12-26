@@ -6,13 +6,15 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter } from 'react-router-dom';
 import ThemeProvider from './components/Context/ThemeContext';
 import { ToastContainer } from 'react-toastify';
+import BankingApp from './components/BankingApp/BankingApp';
+import CreateUser from './components/User/CreateUser';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <App />
+        <CreateUser />
         <ToastContainer />
       </ThemeProvider>
     </BrowserRouter>

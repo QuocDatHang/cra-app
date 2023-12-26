@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup"
+import axios from "axios";
 
 const schema = yup.object({
     fullName: yup.string().required("Full name must not be empty"),
@@ -17,17 +18,20 @@ export default function AddUser({ users, setUsers, setLoading, userId, setUserId
     })
 
     useEffect(() => {
-        setLoading(true);
-        fetch(`https://65829b9202f747c83679b1ac.mockapi.io/users/${userId}`)
-            .then((res) => res.json())
-            .then((result) => {
+        if (userId) {
+            setLoading(true);
+            const getUserById = async () => {
+                const res = await axios.get(`https://65829b9202f747c83679b1ac.mockapi.io/users/${userId}`);
+                const result = await res.data;
                 setValue("fullName", result.fullName)
                 setValue("gender", result.gender)
                 setValue("address", result.address)
                 setValue("age", result.age)
 
                 setLoading(false)
-            })
+            }
+            getUserById();
+        }
     }, [userId])
 
     const handleAddUser = (data) => {
@@ -73,8 +77,9 @@ export default function AddUser({ users, setUsers, setLoading, userId, setUserId
                         setUsers(result);
                         setLoading(false);
                     })
-                setAddUser(false)
                 reset();
+                setAddUser(false)
+                setUserId();
             }).catch(err => toast.error('Update fail'))
     }
     return (
@@ -130,6 +135,7 @@ export default function AddUser({ users, setUsers, setLoading, userId, setUserId
                             <button type='button' className='btn btn-dark m-2' onClick={() => {
                                 setAddUser(false)
                                 reset()
+                                setUserId(0)
                             }
                             }>Cancel</button>
                         </>
