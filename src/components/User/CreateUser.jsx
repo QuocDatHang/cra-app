@@ -58,7 +58,7 @@ export default function CreateUser() {
                     </select>
                     <span className='invalid-feedback'>{errors?.gender?.message}</span>
                 </div>
-                <button type='button' className='btn btn-info my-2'>Login</button>
+                <button  className='btn btn-info my-2'>Login</button>
                 <button type='button' className='btn btn-dark m-2' onClick={() => reset()}>Cancel</button>
                 <button type='button' className='btn btn-danger' onClick={handleChangeTheme} >Change Theme</button>
             </form>

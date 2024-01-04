@@ -7,13 +7,14 @@ import ThemeProvider from './components/Context/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 import BankingApp from './components/BankingApp/BankingApp';
 import CreateUser from './components/User/CreateUser';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <BankingApp />
+        <App />
         <ToastContainer />
       </ThemeProvider>
     </BrowserRouter>
