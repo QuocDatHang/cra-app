@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import HTMLReactParser from 'html-react-parser';
+import axios from 'axios';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 export default function CkEditor() {
@@ -12,27 +13,65 @@ export default function CkEditor() {
         console.log("data input", dataInput);
     }
 
-    const handleFileUpload = async (loader) => {
-        const file = await loader.file;
-        const formData = new FormData();
-        formData.append('image', file);
-        try {
-            const response = await fetch('http://localhost:8080/api/product-images', {
-                method: 'POST',
-                body: formData
-            });
-            if (!response.ok) {
-                throw new Error('Upload failed');
+    // const handleFileUpload = async (loader) => {
+    //     const file = await loader.file;
+    //     const formData = new FormData();
+    //     formData.append('image', file);
+    //     try {
+    //         const response = await fetch('http://localhost:8080/api/product-images', {
+    //             method: 'POST',
+    //             body: formData
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error('Upload failed');
+    //         }
+    //         const result = await response.json();
+    //         const url = result.fileUrl;
+    //         return `http://localhost:8080/api/product-images/${url}`
+    //         // const editorInstance = ClassicEditor.instances[0];
+    //         // const imageHtml = `<img src="${url}" alt="Uploaded Image">`;
+    //         // editorInstance.setData(editorInstance.getData() + imageHtml);
+    //         // const imageHtml = `<img src="${url}" alt="Uploaded Image">`;
+    //         // setDataInput(imageHtml)
+    //         // const data = new DataTransfer();
+    //         // data.items.add(new File([file], url));
+    //         // loader.file = data.files[0];
+    //         // return loader.upload();
+    //     } catch (error) {
+    //         throw new Error('Upload failed');
+    //     }
+    // };
+
+    function handleFileUpload(loader) {
+        return {
+            upload: () => {
+                return new Promise((resolve, reject) => {
+                    const body = new FormData();
+                    loader.file.then((file) => {
+                        body.append('image', file);
+                        axios.post('http://localhost:8080/api/product-images', body, {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        })
+                            .then((response) => {
+                                console.log('my res', response.data.fileUrl);
+                                resolve({ default: `${response.data.fileUrl}` })
+                            })
+                            .catch((error) => { 
+                                console.log(error);
+                            });
+                    })
+                })
             }
-            const data = await response.json();
-            console.log(data);
-            const url = data.fileUrl;
-            console.log(url);
-            return url;
-        } catch (error) {
-            throw new Error('Upload failed');
         }
-    };
+    }
+
+    function uploadPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return handleFileUpload(loader);
+        };
+    }
 
     return (
         <>
@@ -41,23 +80,14 @@ export default function CkEditor() {
                 <div>
                     <CKEditor
                         editor={ClassicEditor}
-                        data=""
-                        // config={{
-                        //     // Cấu hình tải lên tệp tin
-                        //     ckfinder: {
-                        //       uploadUrl: 'http://localhost:8080/api/product-images',
-                        //       options: {
-                        //         resourceType: 'Images',
-                        //       },
-                        //     },
-                        //   }}
+                        data="<p>Hello from CKEditor 5!</p>"
+                        config={{
+                            // plugins: [ImageResize],
+                            // toolbar: ['image'],
+                            extraPlugins: [uploadPlugin]
+                        }}
+
                         onReady={(editor) => {
-                            // Đăng ký sự kiện tải lên tệp tin
-                            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                                return {
-                                    upload: handleFileUpload(loader),
-                                };
-                            };
                         }}
                         onBlur={(event, editor) => {
                             const data = editor.getData();
