@@ -4,43 +4,13 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import HTMLReactParser from 'html-react-parser';
 import axios from 'axios';
-import ClassicEdnpitor from '@ckeditor/ckeditor5-build-classic';
-
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function CkEditor() {
     const [dataInput, setDataInput] = useState('')
     const handleClickBtn = () => {
         console.log("data input", dataInput);
     }
-
-    // const handleFileUpload = async (loader) => {
-    //     const file = await loader.file;
-    //     const formData = new FormData();
-    //     formData.append('image', file);
-    //     try {
-    //         const response = await fetch('http://localhost:8080/api/product-images', {
-    //             method: 'POST',
-    //             body: formData
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error('Upload failed');
-    //         }
-    //         const result = await response.json();
-    //         const url = result.fileUrl;
-    //         return `http://localhost:8080/api/product-images/${url}`
-    //         // const editorInstance = ClassicEditor.instances[0];
-    //         // const imageHtml = `<img src="${url}" alt="Uploaded Image">`;
-    //         // editorInstance.setData(editorInstance.getData() + imageHtml);
-    //         // const imageHtml = `<img src="${url}" alt="Uploaded Image">`;
-    //         // setDataInput(imageHtml)
-    //         // const data = new DataTransfer();
-    //         // data.items.add(new File([file], url));
-    //         // loader.file = data.files[0];
-    //         // return loader.upload();
-    //     } catch (error) {
-    //         throw new Error('Upload failed');
-    //     }
-    // };
 
     function handleFileUpload(loader) {
         return {
