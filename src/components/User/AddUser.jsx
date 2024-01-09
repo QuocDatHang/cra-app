@@ -35,7 +35,7 @@ export default function AddUser({ users, setUsers, setLoading, userId, setUserId
     }, [userId])
 
     const handleAddUser = (data) => {
-
+        
         fetch('https://65829b9202f747c83679b1ac.mockapi.io/users', {
             method: 'POST',
             headers: {
@@ -44,7 +44,6 @@ export default function AddUser({ users, setUsers, setLoading, userId, setUserId
             body: JSON.stringify(data)
         })
             .then(res => {
-
                 toast.success('Create user successful!')
                 setLoading(true);
                 fetch('https://65829b9202f747c83679b1ac.mockapi.io/users')
