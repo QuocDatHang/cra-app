@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+
 import HTMLReactParser from 'html-react-parser';
 import axios from 'axios';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEdnpitor from '@ckeditor/ckeditor5-build-classic';
 
 
 export default function CkEditor() {
@@ -10,28 +12,6 @@ export default function CkEditor() {
     const handleClickBtn = () => {
         console.log("data input", dataInput);
     }
-
-    // const imageConfiguration = {
-    //     resizeOptions: [
-    //         {
-    //             name: 'resizeImage:original',
-    //             value: null,
-    //             label: 'Original'
-    //         },
-    //         {
-    //             name: 'resizeImage:40',
-    //             value: '40',
-    //             label: '40%'
-    //         },
-    //         {
-    //             name: 'resizeImage:60',
-    //             value: '60',
-    //             label: '60%'
-    //         }
-    //     ],
-    //     toolbar: ['resizeImage'],
-    // }
-
 
     // const handleFileUpload = async (loader) => {
     //     const file = await loader.file;
@@ -78,7 +58,7 @@ export default function CkEditor() {
                                 console.log('my res', response.data.fileUrl);
                                 resolve({ default: `${response.data.fileUrl}` })
                             })
-                            .catch((error) => {
+                            .catch((error) => { 
                                 console.log(error);
                             });
                     })
@@ -100,10 +80,13 @@ export default function CkEditor() {
                 <div>
                     <CKEditor
                         editor={ClassicEditor}
-                        data=""
+                        data="<p>Hello from CKEditor 5!</p>"
                         config={{
+                            // plugins: [ImageResize],
+                            // toolbar: ['image'],
                             extraPlugins: [uploadPlugin]
                         }}
+
                         onReady={(editor) => {
                         }}
                         onBlur={(event, editor) => {
